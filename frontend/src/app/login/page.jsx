@@ -3,7 +3,8 @@ import React from 'react'
 const login
  = () => {
   return (
-    <div>
+
+    <div className='max-w-[30%] mx-auto mt-32 mb-32'>
       <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
   <div className="p-4 sm:p-7">
     <div className="text-center">
