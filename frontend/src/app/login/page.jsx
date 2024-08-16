@@ -1,11 +1,48 @@
-import React from 'react'
 
-const login
- = () => {
+'use client';
+import { useFormik } from 'formik'
+import React from 'react';
+import toast from 'react-hot-toast';
+// import classes from './login.module.css';
+import * as Yup from 'yup';
+import axios from 'axios';
+
+
+const LoginSchema=Yup.object().shape({
+  email:Yup.string().email('invalid').required('required'),
+password:Yup.string().min(2,'too short').matches(/[a-z]/,'must include lowercase')
+})
+
+const Login = () => {
+ 
+  const formik= useFormik({
+    initialValues:{
+    email:'',
+    password:'',
+
+    },
+    validationSchema: LoginSchema,
+    onSubmit:(values)=>{
+      console.log(values);
+
+      axios.post('http://localhost:5000/user/add/', values)
+      .then((result) => {
+        toast.success('login successful')
+
+        localStorage.setItem('token', response.data.token);
+
+
+      }).catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.message); 
+      });
+    }
+  })
+  
   return (
-
-    <div className='max-w-[30%] mx-auto mt-32 mb-32'>
-      <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
+    <div>
+      <div className='flex justify-center w-30%'>
+       <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
   <div className="p-4 sm:p-7">
     <div className="text-center">
       <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
@@ -14,7 +51,7 @@ const login
       <p className="mt-2 text-sm text-gray-600 dark:text-neutral-400">
         Don't have an account yet?
         <a
-          className="text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500"
+          className="text-blue-600 decoration-2 hover:underline font-medium dark:text-blue-500"
           href="../examples/html/signup.html"
         >
           Sign up here
@@ -24,7 +61,7 @@ const login
     <div className="mt-5">
       <button
         type="button"
-        className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+        className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
       >
         <svg
           className="w-4 h-auto"
@@ -56,7 +93,8 @@ const login
         Or
       </div>
       {/* Form */}
-      <form>
+      
+      <form onSubmit={formik.handleSubmit}>
         <div className="grid gap-y-4">
           {/* Form Group */}
           <div>
@@ -70,11 +108,15 @@ const login
               <input
                 type="email"
                 id="email"
-                name="email"
-                className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                
+                className="py-3 px-4 block w-full border-gray-200 border-2 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                 required=""
                 aria-describedby="email-error"
               />
+              <p className='text-xs text-red-600 mt-2'>{formik.errors.email}</p>
               <div className="hidden absolute inset-y-0 end-0 pointer-events-none pe-3">
                 <svg
                   className="size-5 text-red-500"
@@ -103,7 +145,7 @@ const login
                 Password
               </label>
               <a
-                className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500"
+                className="text-sm text-blue-600 decoration-2 hover:underline font-medium"
                 href="../examples/html/recover-account.html"
               >
                 Forgot password?
@@ -113,11 +155,13 @@ const login
               <input
                 type="password"
                 id="password"
-                name="password"
-                className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="py-3 px-4 block w-full border-gray-200 border-2 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                 required=""
                 aria-describedby="password-error"
               />
+              <p className='text-xs text-red-600 mt-2'>{formik.errors.password}</p>
               <div className="hidden absolute inset-y-0 end-0 pointer-events-none pe-3">
                 <svg
                   className="size-5 text-red-500"
@@ -155,7 +199,7 @@ const login
           {/* End Checkbox */}
           <button
             type="submit"
-            className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
           >
             Sign in
           </button>
@@ -165,10 +209,9 @@ const login
     </div>
   </div>
 </div>
-
-
-    </div>
+</div>
+        </div>
   )
 }
 
-export default login
+export default Login
