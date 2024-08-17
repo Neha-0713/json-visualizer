@@ -1,6 +1,7 @@
 // importing expess
 const express = require('express');
 const UserRouter = require('./routers/UserRouter');
+const RealstateRouter = require('./routers/RealStateRouter');
 const cors = require('cors');
 
 // initialize express
@@ -15,6 +16,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/user', UserRouter);
+app.use('/realstate', RealstateRouter);
 
 // endpoint or route
 app.get('/', (req, res) => {

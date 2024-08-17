@@ -1,10 +1,11 @@
-const {Schema, model} = require('../connection');
+const { Schema, model } = require('../connection');
 
 
 const mySchema = new Schema({
     location: String,
-    area:String,
-
+    area: String,
+    image: String,
+    createdAt: { type: Date, default: Date.now }
 });
 
- module.exports = model('users', mySchema);
+module.exports = model('realstate', mySchema);

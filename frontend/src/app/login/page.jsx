@@ -25,7 +25,7 @@ const Login = () => {
     onSubmit:(values)=>{
       console.log(values);
 
-      axios.post('http://localhost:5000/user/add/', values)
+      axios.post('http://localhost:5000/user/authenticate', values)
       .then((result) => {
         toast.success('login successful')
 
@@ -34,7 +34,7 @@ const Login = () => {
 
       }).catch((err) => {
         console.log(err);
-        toast.error(err.response.data.message); 
+        toast.error(err.response?.data?.message); 
       });
     }
   })
