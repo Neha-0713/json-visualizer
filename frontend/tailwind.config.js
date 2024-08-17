@@ -6,6 +6,7 @@ module.exports = {
     './components/**/*.{js,jsx}',
     './app/**/*.{js,jsx}',
     './src/**/*.{js,jsx}',
+    'node_modules/preline/dist/*.js',
   ],
   prefix: "",
   theme: {
@@ -74,4 +75,5 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  require:[('preline/plugin')],
 }
