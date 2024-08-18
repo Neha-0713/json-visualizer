@@ -1,29 +1,71 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import Router from 'next/navigation';
+'use client';
+import React, { useRef } from "react";
+import { useFormik } from "formik";
+import { useRouter } from "next/navigation";
+import * as Yup from "yup";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-const propertyform
- = () => {
 
-    const { id } = useParams();
-    const [ProductData, setProductData] = useState(null);
+const propertySchema = Yup.object().shape({
+  location: Yup.string()
+    .min(2, "Too short")
+    .max(25, "Too Long")
+    .required("Please enter location"),
 
-const getProductData = async ()=>{
-        const res = await axios.get('http://localhost:5000/product/getbyid/' + id);
-        console.log(res.data);
-        setProductData(res.data);
+  area: Yup.string()
+  .min(2, "Too short")
+  .max(25, "Too Long")
+  .required("Please enter area of the property"),
+
+  category: Yup.string()
+  .min(2, "Too short")
+  .max(25, "Too Long")
+  .required("Please enter category"),
+
+  price: Yup.number().required(),
+
+
+
+
+});
+
+const initialValues= {
+  location: "",
+  area:"",
+  category:"",
+  price:"",
+  image:"",
+};
+
+const PropertyForm = () => {
+  const router = useRouter();
+  const fileRef = useRef("");
+  const formik = useFormik({
+    initialValues: initialValues,
+    onSubmit: (values, {resetForm, setSubmitting})=>{
+      console.log(values);
+
+      axios.post("http://localhost:5000/realstate/add", values)
+      .then((response) => {
+        console.log(response.status);
+        resetForm();
+        fileRef.current.value="";
        
-}
-useEffect(() => {
-getProductData()
-}, [])
-
+        toast.success("Registered successfully");
+          //router.push("/allproduct");
+      }).catch((err) => {
+        console.log(err);
+      });
+      setSubmitting(false);
+    },
+    validationSchema: propertySchema,
+  })
 
 
 
   return (
     <div>
-            <div>
       <>
         {/* Card Section */}
         <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 mx-auto">
@@ -31,10 +73,10 @@ getProductData()
           <div className="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-neutral-800">
             <div className="mb-8">
               <h2 className="text-xl font-bold text-gray-800 dark:text-neutral-200">
-                Product description
+                Property description
               </h2>
               <p className="text-sm text-gray-600 dark:text-neutral-400">
-                Manage product name, category and price settings.
+                List your property 
               </p>
             </div>
             <form onSubmit={formik.handleSubmit}>
@@ -62,12 +104,23 @@ getProductData()
                         id="image"
                         type="file"
                         ref={fileRef}
-                     
+                        onBlur={formik.handleBlur}
+                        onChange={(event) => {
+                          formik.setFieldValue(
+                            "image",
+                            URL.createObjectURL(event.currentTarget.files[0])
+                            
+                          );
+                        }}
                       />
 
                        </label>
                       </div>
-              
+                      {formik.errors.image && formik.touched.image ? (
+                  <p className="text-xs text-red-600 mt-2">
+                    {formik.errors.image}
+                  </p>
+                ) : null}
 
                     </div>
                   </div>
@@ -78,23 +131,29 @@ getProductData()
                     htmlFor="title"
                     className="inline-block text-sm text-gray-800 mt-2.5 dark:text-neutral-200"
                   >
-                    Title
+                    Location
                   </label>
                 </div>
                 {/* End Col */}
                 <div className="sm:col-span-9">
                   <div className="sm:flex">
                     <input
-                      id="title"
+                      id="location"
                       type="text"
-                      name="title"
-                      
+                      name="location"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      value={formik.values.title}
                       className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                      placeholder=" Men polo T-shirt"
+                      placeholder="Street name,locality,city"
                     />
                     
                   </div>
-              
+                  {formik.errors.location && formik.touched.location ? (
+                    <p className="text-xs text-red-600 mt-2">
+                      {formik.errors.title}
+                    </p>
+                  ) : null}
 
                 </div>
                 <div className="sm:col-span-3">
@@ -102,21 +161,27 @@ getProductData()
                     htmlFor="brand"
                     className="inline-block text-sm text-gray-800 mt-2.5 dark:text-neutral-200"
                   >
-                    Brand
+                    Area
                   </label>
                 </div>
                 {/* End Col */}
                 <div className="sm:col-span-9">
                   <div className="sm:flex">
                     <input
-                      id="brand"
+                      id="area"
                       type="text"
-                      
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      value={formik.values.brand}
                       className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                      placeholder="Adidas"
+                      placeholder="2000 sqft"
                     />
                   </div>
-              
+                  {formik.errors.area && formik.touched.area ? (
+                    <p className="text-xs text-red-600 mt-2">
+                      {formik.errors.brand}
+                    </p>
+                  ) : null}
 
                 </div>
                 <div className="sm:col-span-3">
@@ -133,12 +198,18 @@ getProductData()
                     <input
                       id="category"
                       type="text"
-                    
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      value={formik.values.category}
                       className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                      placeholder="Clothing"
+                      placeholder="Residential/Commercial"
                     />
                   </div>
-               
+                  {formik.errors.category && formik.touched.category ? (
+                    <p className="text-xs text-red-600 mt-2">
+                      {formik.errors.category}
+                    </p>
+                  ) : null}
 
                 </div>
                 <div className="sm:col-span-3">
@@ -155,12 +226,18 @@ getProductData()
                     <input
                       id="price"
                       type="number"
-                    
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      value={formik.values.price}
                       className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                      placeholder="₹4000"
+                      placeholder="₹400/sqrt"
                     />
                   </div>
-              
+                  {formik.errors.price && formik.touched.price ? (
+                    <p className="text-xs text-red-600 mt-2">
+                      {formik.errors.price}
+                    </p>
+                  ) : null}
 
                 </div>
               </div>
@@ -187,9 +264,7 @@ getProductData()
         {/* End Card Section */}
       </>
     </div>
+  );
+};
 
-    </div>
-  )
-}
-
-export default propertyform
+export default PropertyForm
