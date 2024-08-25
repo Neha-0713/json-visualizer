@@ -62,10 +62,12 @@ export const Header = () => {
     (<div
       className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full  left-0 top-0">
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
-      Selling, buying  <br /> made simple 
+        The  <br /> development studio
       </h1>
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
-      Welcome to Homey, where we're streamlining the real estate process to make your life easier. Our intuitive platform and expert tools help you navigate every step of the journey, from listing to closing.
+        We build beautiful products with the latest technologies and frameworks.
+        We are a team of passionate developers and designers that love to build
+        amazing products.
       </p>
     </div>)
   );
@@ -86,7 +88,7 @@ export const ProductCard = ({
       key={product.title}
       className="group/product h-96 w-[30rem] relative flex-shrink-0">
       <Link href={product.link} className="block group-hover/product:shadow-2xl ">
-        <img
+        <Image
           src={product.thumbnail}
           height="600"
           width="600"
@@ -102,3 +104,5 @@ export const ProductCard = ({
     </motion.div>)
   );
 };
+ export default HeroParallax;
+

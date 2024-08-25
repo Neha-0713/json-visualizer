@@ -100,15 +100,17 @@ const products = [
 const home = () => {
   return (
 
-    <div>
+    <div className='bg-[#F6ECE3]'>
 
       <div className='h-[100vh]'>
-        body
+        
         <HeroParallax products={products} />
       </div>
+      <div className='h-[100vh]'></div>
+      <div className='h-[100vh]'></div>
 
       <div className='align-bottom'>
-        <footer className="bg-white align-text-bottom max-h-2:">
+        <footer className="bg-[#91766E] align-text-bottom max-h-2:">
           <div className="mx-auto max-w-screen-xl px-4 pb-8 pt-16 sm:px-6 lg:px-8 lg:pt-24">
             <div className="text-center">
               <h2 className="text-3xl font-extrabold text-gray-900 sm:text-5xl">
