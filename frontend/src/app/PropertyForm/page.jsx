@@ -14,14 +14,14 @@ const propertySchema = Yup.object().shape({
     .required("Please enter location"),
 
   area: Yup.string()
-  .min(2, "Too short")
-  .max(25, "Too Long")
-  .required("Please enter area of the property"),
+    .min(2, "Too short")
+    .max(25, "Too Long")
+    .required("Please enter area of the property"),
 
   category: Yup.string()
-  .min(2, "Too short")
-  .max(25, "Too Long")
-  .required("Please enter category"),
+    .min(2, "Too short")
+    .max(25, "Too Long")
+    .required("Please enter category"),
 
   price: Yup.number().required(),
 
@@ -30,12 +30,12 @@ const propertySchema = Yup.object().shape({
 
 });
 
-const initialValues= {
+const initialValues = {
   location: "",
-  area:"",
-  category:"",
-  price:"",
-  image:"",
+  area: "",
+  category: "",
+  price: "",
+  image: "",
 };
 
 const PropertyForm = () => {
@@ -43,24 +43,45 @@ const PropertyForm = () => {
   const fileRef = useRef("");
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (values, {resetForm, setSubmitting})=>{
+    onSubmit: (values, { resetForm, setSubmitting }) => {
       console.log(values);
 
       axios.post("http://localhost:5000/realstate/add", values)
-      .then((response) => {
-        console.log(response.status);
-        resetForm();
-        fileRef.current.value="";
-       
-        toast.success("Registered successfully");
-          //router.push("/allproduct");
-      }).catch((err) => {
-        console.log(err);
-      });
+        .then((response) => {
+          console.log(response.status);
+          resetForm();
+          fileRef.current.value = "";
+
+          toast.success("Registered successfully");
+          router.push("/allproperty");
+        }).catch((err) => {
+          console.log(err);
+        });
       setSubmitting(false);
     },
     validationSchema: propertySchema,
   })
+
+  const uploadToCloud = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', 'myuploadpreset');
+    fd.append('cloud_name', 'ddsnnqpbv');
+
+    axios.post('https://api.cloudinary.com/v1_1/ddsnnqpbv/image/upload',
+      fd,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    )
+      .then((response) => {
+        console.log(response.data);
+        formik.setFieldValue('image', response.data.url);
+      }).catch((err) => {
+        console.log(err);
+      });
+  }
 
 
 
@@ -76,7 +97,7 @@ const PropertyForm = () => {
                 Property description
               </h2>
               <p className="text-sm text-gray-600 dark:text-neutral-400">
-                List your property 
+                List your property
               </p>
             </div>
             <form onSubmit={formik.handleSubmit}>
@@ -98,29 +119,22 @@ const PropertyForm = () => {
                     <div className="flex gap-x-2">
                       <div>
                         <label className="inline-block text-sm text-gray-800 mt-2.5 dark:text-neutral-200"
-                         htmlFor="image">
-                     
-                       <input 
-                        id="image"
-                        type="file"
-                        ref={fileRef}
-                        onBlur={formik.handleBlur}
-                        onChange={(event) => {
-                          formik.setFieldValue(
-                            "image",
-                            URL.createObjectURL(event.currentTarget.files[0])
-                            
-                          );
-                        }}
-                      />
+                          htmlFor="image">
 
-                       </label>
+                          <input
+                            id="image"
+                            type="file"
+                            
+                            onChange={uploadToCloud}
+                          />
+
+                        </label>
                       </div>
                       {formik.errors.image && formik.touched.image ? (
-                  <p className="text-xs text-red-600 mt-2">
-                    {formik.errors.image}
-                  </p>
-                ) : null}
+                        <p className="text-xs text-red-600 mt-2">
+                          {formik.errors.image}
+                        </p>
+                      ) : null}
 
                     </div>
                   </div>
@@ -147,7 +161,7 @@ const PropertyForm = () => {
                       className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                       placeholder="Street name,locality,city"
                     />
-                    
+
                   </div>
                   {formik.errors.location && formik.touched.location ? (
                     <p className="text-xs text-red-600 mt-2">
@@ -250,7 +264,7 @@ const PropertyForm = () => {
                   Cancel
                 </button>
                 <button
-                disabled={formik.isSubmitting}
+                  disabled={formik.isSubmitting}
                   type="submit"
                   className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                 >

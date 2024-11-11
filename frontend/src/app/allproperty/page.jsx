@@ -59,9 +59,9 @@ const allproperty = () => {
                 <div className="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700">
                   <Link
                     className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-blue-500 text-white text-gray-800 shadow-sm hover:bg-blue-400"
-                    href={"/updateproduct/" + property._id}
+                    href={"/viewProperty/" + property._id}
                   >
-                    Save
+                    View Details
                   </Link>
                   <button
                     

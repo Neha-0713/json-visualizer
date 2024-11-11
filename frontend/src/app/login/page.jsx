@@ -3,9 +3,9 @@
 import { useFormik } from 'formik'
 import React from 'react';
 import toast from 'react-hot-toast';
-// import classes from './login.module.css';
 import * as Yup from 'yup';
 import axios from 'axios';
+import { useRouter } from "next/navigation";
 
 
 const LoginSchema=Yup.object().shape({
@@ -14,7 +14,7 @@ password:Yup.string().min(2,'too short').matches(/[a-z]/,'must include lowercase
 })
 
 const Login = () => {
- 
+  const router = useRouter();
   const formik= useFormik({
     initialValues:{
     email:'',
@@ -25,9 +25,10 @@ const Login = () => {
     onSubmit:(values)=>{
       console.log(values);
 
-      axios.post('http://localhost:5000/user/authenticate', values)
+      axios.post('http://localhost:5000/realstate/authenticate', values)
       .then((result) => {
         toast.success('login successful')
+        
 
         localStorage.setItem('token', response.data.token);
 
